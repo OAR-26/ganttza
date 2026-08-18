@@ -1,0 +1,184 @@
+app:
+  title: "Goard"
+  mode: "Mode :"
+  refreshing: "Rafraîchissement des données..."
+  menu:
+    file: "Fichier"
+    options: "Options"
+    quit: "Quitter"
+    login: "Se connecter"
+    connected_as: "Connecté en tant que : %{user}"
+    logout: "Se déconnecter"
+    view: "Vue"
+    dashboard: "Tableau de bord"
+    gantt: "Diagramme de Gantt"
+    filters: "Filtres"
+    refresh_rate:
+      button: "Rafraîchissement auto."
+      refresh_30: "30 s"
+      refresh_60: "1 min"
+      refresh_300: "5 min"
+      refresh_never: "Jamais"
+  options:
+    title: "Options"
+    save:
+      title: "Enregistrer"
+      success: "Options enregistrées avec succès."
+      error: "Une erreur s'est produite lors de l'enregistrement des options."
+    language:
+      title: "Langue :"
+      choose: "Choisir une langue"
+      en: "English"
+      fr: "Français"
+    theme:
+      title: "Thème :"
+      choose: "Choisir un thème"
+      light: "Light"
+      dark: "Dark"
+    font_size:
+      title: "Taille de la police :"
+      choose: "Choisir une taille de police"
+  filter:
+    page_title: "Filtres"
+    title: "Options de filtrage"
+    owner: "Propriétaire"
+    state: "État"
+  dashboard:
+    title: "Tableau de bord"
+    start_time: "Heure de début"
+    end_time: "Heure de fin"
+    total_jobs: "Total des Jobs"
+    show_metrics: "Afficher les métriques"
+    show_charts: "Afficher les graphiques"
+  details:
+    general:
+      title: "Détails du job"
+    basic_info:
+      title: "Informations de base"
+      owner: "Propriétaire"
+      queue: "File d'attente"
+      command: "Commande"
+    status:
+      title: "Statut"
+      state: "État"
+      message: "Message"
+    timing_info:
+      title: "Informations de timing"
+      submission_time: "Heure de soumission"
+      scheduled_start_time: "Heure de début planifiée"
+      actual_start_time: "Heure de début"
+      stop_time: "Heure de fin"
+      wall_time: "Temps d'exécution"
+    resources:
+      title: "Ressources"
+      cluster: "Cluster"
+    tooltip:
+      job_id: "ID du job"
+      owner: "Propriétaire"
+      state: "État"
+      start_time: "Heure de début"
+      walltime: "Durée"
+  gantt:
+    settings:
+      title: "🔧 Paramètres"
+      job_color: "Couleur des jobs"
+      job_color_random: "Aléatoire"
+      job_color_state: "Par état"
+      field_colors_btn: "✏ Modifier les couleurs par champ..."
+      field_colors_title: "Couleurs par champ"
+      field_colors_fields: "Champs"
+      field_colors_new_field: "Nouveau champ :"
+      field_colors_add: "+ Ajouter"
+      field_colors_select_hint: "Sélectionner un champ"
+      field_colors_new_value: "Nouvelle valeur :"
+      field_colors_save: "✔  Sauvegarder"
+      field_colors_cancel: "Annuler"
+      hide_resources: "Masquer toutes les ressources"
+      show_resources: "Afficher toutes les ressources"
+      level: "Niveau"
+      aggregate_by: "Agrégation par"
+      host: "Hôte"
+      owner: "Propriétaire"
+      none: "Aucun"
+    help: "Faites glisser pour vous déplacer.\n\
+      Zoom : Ctrl/cmd + défilement ou glissement vertical avec clic droit.\n\
+      Zoom vertical : Alt/Option + défilement.\n\
+      Clic gauche sur un job pour zoomer dessus.\n\
+      Double clic gauche pour réinitialiser la vue.\n\
+      Clic droit sur un job pour voir les détails"
+    now: "⌚ Centrer sur maintenant"
+    title: "Diagramme de Gantt - Jobs OAR"
+    zoom_in: "Zoom +"
+    zoom_out: "Zoom -"
+  loading: "Chargement des données..."
+  time_selector:
+    button: "Sélection de période"
+    modal:
+      title: "Sélectionner une période"
+      today: "Aujourd'hui"
+      week: "Cette semaine"
+      month: "Ce mois-ci"
+      start_date: "Date de début"
+      start_time: "Heure de début"
+      end_date: "Date de fin"
+      end_time: "Heure de fin"
+      validate: "Valider"
+      cancel: "Annuler"
+    errors:
+      invalid_format: "Veuillez vérifier le format des dates (YYYY-MM-DD) et des heures (HH:MM)."
+      end_before_start: "La date et l'heure de début doivent être antérieures ou égales à celles de fin"
+  job_state:
+    unknown: "Inconnu"
+    waiting: "En attente de planification"
+    hold: "En pause"
+    to_launch: "Préparation au lancement"
+    to_error: "En cours d'erreur"
+    to_ack_reservation: "En attente de confirmation"
+    launching: "Lancement en cours"
+    running: "En cours d'exécution"
+    suspended: "Suspendu"
+    resuming: "Reprise en cours"
+    finishing: "Finalisation"
+    terminated: "Terminé"
+    error: "Erreur"
+  job_table:
+    title: "Liste des jobs"
+    next: "Suivant"
+    previous: "Précédent"
+    select_all: "Tout sélectionner"
+    select_default: "Sélection par défaut"
+    settings: "🔧 Paramètres"
+    help: "Actions disponibles:\n\
+      - Navigation: Utilisez les boutons page suivante/précédente\n\
+      - Tri: Cliquez sur l'en-tête d'une colonne pour trier (croissant/décroissant)\n\
+      - Détails: Cliquez sur une ligne pour voir les détails du job\n\
+      - Paramètres: Via le bouton '🔧 Paramètres' pour configurer l'affichage"
+    table:
+      columns: "Colonnes :"
+      queue: "File d'attente"
+      command: "Commande"
+      message: "Message"
+      submission_time: "Heure de soumission"
+      scheduled_start_time: "Heure de début planifiée"
+      stop_time: "Heure de fin"
+      wall_time: "Temps d'exécution"
+      exit_code: "Code de sortie"
+      clusters: "Clusters"
+      row: "Ligne"
+      job_id: "ID du job"
+      owner: "Propriétaire"
+      state: "État"
+      start_time: "Heure de début"
+      walltime: "Durée"
+  filters:
+    title: "Filtres"
+    from: "De"
+    to: "À"
+    states: "Statuts"
+    reset: "Réinitialiser"
+    apply: "Appliquer"
+  authentification:
+    title: "Authentification"
+    login: "Se connecter"
+    username: "Nom d 'utilisateur"
+    password: "Mot de passe"

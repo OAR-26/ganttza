@@ -1,0 +1,185 @@
+app:
+  title: "Goard"
+  mode: "Mode:"
+  refreshing: "Refreshing data..."
+  menu:
+    file: "File"
+    options: "Options"
+    quit: "Quit"
+    login: "Login"
+    connected_as: "Connected as: %{user}"
+    logout: "Logout"
+    view: "View"
+    dashboard: "Dashboard"
+    gantt: "Gantt Chart"
+    filters: "Filters"
+    refresh_rate:
+      button: "Refresh Rate"
+      refresh_30: "30 s"
+      refresh_60: "1 min"
+      refresh_300: "5 min"
+      refresh_never: "Never"
+  options:
+    title: "Options"
+    save:
+      title: "Save"
+      success: "Options saved successfully."
+      error: "An error occurred while saving options."
+    language:
+      title: "Language:"
+      choose: "Choose a language"
+      en: "English"
+      fr: "Français"
+    theme:
+      title: "Theme:"
+      choose: "Choose a theme"
+      light: "Light"
+      dark: "Dark"
+    font_size:
+      title: "Font size:"
+      choose: "Choose a font size"
+  filter:
+    page_title: "Filters"
+    title: "Filter options"
+    owner: "Owner"
+    state: "State"
+  dashboard:
+    title: "Dashboard"
+    start_time: "Start Time"
+    end_time: "End Time"
+    total_jobs: "Total Jobs"
+    show_metrics: "Show metrics"
+    show_charts: "Show charts"
+  details:
+    general:
+      title: "Job Details"
+    basic_info:
+      title: "Basic Information"
+      owner: "Owner"
+      queue: "Queue"
+      command: "Command"
+    status:
+      title: "Status"
+      state: "State"
+      message: "Message"
+    timing_info:
+      title: "Timing Information"
+      submission_time: "Submission Time"
+      scheduled_start_time: "Scheduled Start Time"
+      actual_start_time: "Actual Start Time"
+      stop_time: "Stop Time"
+      wall_time: "Wall Time"
+    resources:
+      title: "Resources"
+      cluster: "Cluster"
+    tooltip:
+      job_id: "Job ID"
+      owner: "Owner"
+      state: "State"
+      start_time: "Start Time"
+      walltime: "Walltime"
+  gantt:
+    settings:
+      title: "🔧 Settings"
+      job_color: "Job color"
+      job_color_random: "Random"
+      job_color_state: "By state"
+      field_colors_btn: "✏ Edit field colors"
+      field_colors_title: "Field colors"
+      field_colors_fields: "Fields"
+      field_colors_new_field: "New field:"
+      field_colors_add: "+ Add"
+      field_colors_select_hint: "Select a field"
+      field_colors_new_value: "New value:"
+      field_colors_save: "✔  Save"
+      field_colors_cancel: "Cancel"
+      hide_resources: "Hide all resources"
+      show_resources: "Show all resources"
+      squash_resources: "Squash resources"
+      level: "Level"
+      aggregate_by: "Aggregate by"
+      host: "Host"
+      owner: "Owner"
+      none: "None"
+    help: "Drag to move around.\n\
+      Zoom: Ctrl/cmd + scroll or vertical drag with right click.\n\
+      Vertical zoom: Alt/Option + scroll.\n\
+      Left click on a job to zoom to it.\n\
+      Double left click to reset view.\n\
+      Right click on a job to see details"
+    now: "⌚ Center on now"
+    title: "Gantt Chart"
+    zoom_in: "Zoom +"
+    zoom_out: "Zoom -"
+  loading: "Loading data..."
+  time_selector:
+    button: "Time Selection"
+    modal:
+      title: "Select a period"
+      today: "Today"
+      week: "This week"
+      month: "This month"
+      start_date: "Start date"
+      start_time: "Start time"
+      end_date: "End date"
+      end_time: "End time"
+      validate: "Validate"
+      cancel: "Cancel"
+    errors:
+      invalid_format: "Please check the format of dates (YYYY-MM-DD) and times (HH:MM)."
+      end_before_start: "Start date and time must be before or equal to end date and time"
+  job_state:
+    unknown: "Unknown"
+    waiting: "Waiting"
+    hold: "Hold"
+    to_launch: "ToLaunch"
+    to_error: "ToError"
+    to_ack_reservation: "ToAckReservation"
+    launching: "Launching"
+    running: "Running"
+    suspended: "Suspended"
+    resuming: "Resuming"
+    finishing: "Finishing"
+    terminated: "Terminated"
+    error: "Error"
+  job_table:
+    title: "Job List"
+    next: "Next"
+    previous: "Previous"
+    select_all: "Select all"
+    select_default: "Select default"
+    settings: "🔧 Settings"
+    help: "Available actions:\n\
+      - Navigation: Use next/previous page buttons\n\
+      - Sort: Click on a column header to sort (ascending/descending)\n\
+      - Details: Click on a row to see job details\n\
+      - Settings: Via the '🔧 Settings' button to configure display"
+    table:
+      row: "Row"
+      job_id: "Job ID"
+      owner: "Owner"
+      state: "State"
+      start_time: "Start time"
+      walltime: "Walltime"
+      columns: "Columns:"
+      queue: "Queue"
+      command: "Command"
+      message: "Message"
+      submission_time: "Submission Time"
+      scheduled_start_time: "Scheduled Start Time"
+      stop_time: "Stop Time"
+      wall_time: "Wall Time"
+      exit_code: "Exit Code"
+      clusters: "Clusters"
+  filters:
+    title: "Filters"
+    from: "From"
+    to: "to"
+    states: "States"
+    reset: "Reset"
+    apply: "Apply"
+  authentification:
+    title: "Authentication"
+    login: "Login"
+    username: "Username"
+    password: "Password"
