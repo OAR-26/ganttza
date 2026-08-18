@@ -93,7 +93,8 @@ fn load_views_config() -> ViewsConfig {
     #[cfg(target_arch = "wasm32")]
     let content = include_str!("../../../../views.json").to_string();
     #[cfg(not(target_arch = "wasm32"))]
-    let Ok(content) = std::fs::read_to_string("views.json") else { return fallback; };
+    let content = std::fs::read_to_string("views.json")
+        .unwrap_or_else(|_| include_str!("../../../../views.json").to_string());
     let Ok(val) = serde_json::from_str::<serde_json::Value>(&content) else { return fallback; };
     if val.is_array() {
         // Old format: bare array of views — no presets
