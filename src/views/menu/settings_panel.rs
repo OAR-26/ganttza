@@ -178,6 +178,18 @@ impl SettingsPanel {
                     });
                     ui.add_space(6.0);
 
+                    // ── Timeline ─────────────────────────────────────────────
+                    ui.heading("Timeline");
+                    ui.horizontal(|ui| {
+                        ui.checkbox(&mut cfg.show_year, "Year");
+                        ui.checkbox(&mut cfg.show_month, "Month");
+                        ui.checkbox(&mut cfg.show_day, "Day");
+                        ui.checkbox(&mut cfg.show_hour, "Hour");
+                        ui.checkbox(&mut cfg.show_minute, "Minute");
+                        ui.checkbox(&mut cfg.show_second, "Second");
+                    });
+                    ui.add_space(6.0);
+
                     // ── Navigation ───────────────────────────────────────────
                     ui.heading("Navigation");
                     // Dynamic list — each entry = one ◀/▶ button pair, smallest to largest.

@@ -117,6 +117,12 @@ pub struct Options {
     pub nav_steps: Vec<i64>,
     pub job_block_border: bool,
     pub job_block_border_width: f32,
+    pub show_year: bool,
+    pub show_month: bool,
+    pub show_day: bool,
+    pub show_hour: bool,
+    pub show_minute: bool,
+    pub show_second: bool,
 }
 
 impl Default for Options {
@@ -160,6 +166,12 @@ impl Default for Options {
             nav_steps: vec![86_400, 7 * 86_400],
             job_block_border: false,
             job_block_border_width: 2.5,
+            show_year: true,
+            show_month: true,
+            show_day: true,
+            show_hour: true,
+            show_minute: true,
+            show_second: true,
         }
     }
 }
