@@ -379,6 +379,7 @@ fn job_bar_label(job: &Job, field: &str) -> String {
             else         { format!("{}m", s / 60) }
         }
         "type" | "job_type" => job.job_type.clone(),
+        ""                  => String::new(),
         _                   => job.id.to_string(), // "id" + unknown fields fall back to id
     }
 }

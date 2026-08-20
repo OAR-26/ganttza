@@ -217,7 +217,7 @@ impl SettingsPanel {
                         ui.add(egui::DragValue::new(&mut cfg.job_label_min_width).range(0.0..=200.0));
                     });
                     ui.horizontal(|ui| {
-                        ui.label("Job bar label field:");
+                        ui.label("Job bar label field (leave empty for none):");
                         ui.text_edit_singleline(&mut cfg.job_label_field);
                     });
                     ui.horizontal(|ui| {
