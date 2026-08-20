@@ -154,7 +154,7 @@ impl SettingsPanel {
                     ui.horizontal(|ui| {
                         ui.label("Max (s):");
                         ui.add(egui::DragValue::new(&mut cfg.zoom_max_seconds)
-                            .range(60.0..=2592000.0).suffix(" s"));
+                            .range(60.0..=f64::MAX).suffix(" s"));
                     });
                     ui.horizontal(|ui| {
                         ui.label("Min (s):");
