@@ -74,6 +74,13 @@ pub struct GanttConfig  {
     pub hatch_spacing: f32,
     pub job_block_border: bool,
     pub job_block_border_width: f32,
+    /// Which date/time components to show in the timeline header. All default to true.
+    pub show_year: bool,
+    pub show_month: bool,
+    pub show_day: bool,
+    pub show_hour: bool,
+    pub show_minute: bool,
+    pub show_second: bool,
     /// Navigation step buttons: (n, unit) pairs, smallest to largest.
     /// Each entry produces one ◀/▶ button pair.
     pub nav_steps: Vec<(i64, String)>,
@@ -132,6 +139,12 @@ impl Default for GanttConfig {
             hatch_spacing: 10.0,
             job_block_border: false,
             job_block_border_width: 2.5,
+            show_year: true,
+            show_month: true,
+            show_day: true,
+            show_hour: true,
+            show_minute: true,
+            show_second: true,
             nav_steps: vec![(1, "day".to_string()), (1, "week".to_string())],
             field_colors: std::collections::HashMap::new(),
         }
@@ -221,6 +234,12 @@ impl GanttConfig {
             hatch_spacing:              f64("hatch_spacing").map(|v| v as f32).unwrap_or(def.hatch_spacing),
             job_block_border:           bool("job_block_border").unwrap_or(def.job_block_border),
             job_block_border_width:     f64("job_block_border_width").map(|v| v as f32).unwrap_or(def.job_block_border_width),
+            show_year:                  bool("show_year").unwrap_or(def.show_year),
+            show_month:                 bool("show_month").unwrap_or(def.show_month),
+            show_day:                   bool("show_day").unwrap_or(def.show_day),
+            show_hour:                  bool("show_hour").unwrap_or(def.show_hour),
+            show_minute:                bool("show_minute").unwrap_or(def.show_minute),
+            show_second:                bool("show_second").unwrap_or(def.show_second),
             nav_steps: {
                 val.get("nav_steps")
                     .and_then(|v| v.as_array())
@@ -344,6 +363,15 @@ job_block_border = {job_block_border}
 # Thickness in pixels of the always-on job block border
 job_block_border_width = {job_block_border_width}
 
+# ── Timeline header ──────────────────────────────────────────────────────────
+# Which date/time components to show in the timeline header ruler.
+show_year   = {show_year}
+show_month  = {show_month}
+show_day    = {show_day}
+show_hour   = {show_hour}
+show_minute = {show_minute}
+show_second = {show_second}
+
 # ── Navigation ────────────────────────────────────────────────────────────────
 # Each [[nav_steps]] entry adds one ◀/▶ button pair.
 # Buttons render: ◀ stepN … ◀ step1 | step1 ▶ … stepN ▶
@@ -394,6 +422,12 @@ Standby   = \"{standby_light}\"
             hatch_spacing        = self.hatch_spacing,
             job_block_border       = self.job_block_border,
             job_block_border_width = self.job_block_border_width,
+            show_year            = self.show_year,
+            show_month           = self.show_month,
+            show_day             = self.show_day,
+            show_hour            = self.show_hour,
+            show_minute          = self.show_minute,
+            show_second          = self.show_second,
             nav_steps_toml       = nav_steps_toml,
             field_colors_toml    = field_colors_toml,
             absent_dark          = hex(self.state_colors.absent),
