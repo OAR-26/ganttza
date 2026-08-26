@@ -427,7 +427,11 @@ pub(super) fn paint_job_id_labels(info: &Info, options: &Options, rows: &[Painte
             job.wrap.max_rows = max_lines;
             job.halign = Align::Center;
             let galley = info.painter.fonts(|f| f.layout_job(job));
-            let pos = block_rect.center() - galley.size() / 2.0;
+            // Rows are already horizontally centered within `wrap.max_width` by
+            // the layouter, so anchor at the block's left edge — not
+            // `galley.size()`, which is the tight content bbox and would
+            // double-center (shifting everything left).
+            let pos = pos2(block_rect.min.x + 2.0, block_rect.center().y - galley.size().y / 2.0);
             painter.galley(pos, galley, Color32::BLACK);
         } else {
             painter.text(
