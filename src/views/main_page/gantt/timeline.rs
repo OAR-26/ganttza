@@ -26,8 +26,11 @@ const GRID_LEVELS: &[GridLevel] = &[
     GridLevel { step_s: 720,    medium_s: 7200,    big_s: 14400   }, // 2h / 4h
     GridLevel { step_s: 1800,   medium_s: 18000,   big_s: 36000   }, // 5h / 10h
     GridLevel { step_s: 7200,   medium_s: 72000,   big_s: 144000  }, // 20h / 40h
-    GridLevel { step_s: 86400,  medium_s: 864000,  big_s: 1728000 }, // 10d / 20d
-    GridLevel { step_s: 864000, medium_s: 8640000, big_s: 17280000}, // 100d / 200d
+    GridLevel { step_s: 86400,    medium_s: 604800,   big_s: 1209600  }, // 1wk / 2wk
+    GridLevel { step_s: 604800,   medium_s: 2592000,  big_s: 5184000  }, // 1mo / 2mo
+    GridLevel { step_s: 2592000,  medium_s: 5184000,  big_s: 10368000 }, // 2mo / 4mo
+    GridLevel { step_s: 5184000,  medium_s: 10368000, big_s: 20736000 }, // 4mo / 8mo
+    GridLevel { step_s: 10368000, medium_s: 31536000, big_s: 63072000 }, // 1y / 2y
 ];
 
 pub(super) fn timeline_header_height(options: &Options, usable_width: f32, text_height: f32) -> f32 {
