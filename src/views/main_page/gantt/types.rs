@@ -123,6 +123,8 @@ pub struct Options {
     pub show_hour: bool,
     pub show_minute: bool,
     pub show_second: bool,
+    pub timeline_grid_auto: bool,
+    pub timeline_grid_manual_period_s: i64,
 }
 
 impl Default for Options {
@@ -172,6 +174,8 @@ impl Default for Options {
             show_hour: true,
             show_minute: true,
             show_second: true,
+            timeline_grid_auto: true,
+            timeline_grid_manual_period_s: 3600,
         }
     }
 }

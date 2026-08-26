@@ -81,6 +81,11 @@ pub struct GanttConfig  {
     pub show_hour: bool,
     pub show_minute: bool,
     pub show_second: bool,
+    /// Timeline grid line spacing: true = automatic (picks spacing from zoom level).
+    /// false = fixed spacing set by `timeline_grid_manual_period_s`.
+    pub timeline_grid_auto: bool,
+    /// Fixed seconds between grid lines when `timeline_grid_auto` is false.
+    pub timeline_grid_manual_period_s: i64,
     /// Navigation step buttons: (n, unit) pairs, smallest to largest.
     /// Each entry produces one ◀/▶ button pair.
     pub nav_steps: Vec<(i64, String)>,
@@ -145,6 +150,8 @@ impl Default for GanttConfig {
             show_hour: true,
             show_minute: true,
             show_second: true,
+            timeline_grid_auto: true,
+            timeline_grid_manual_period_s: 3600,
             nav_steps: vec![(1, "day".to_string()), (1, "week".to_string())],
             field_colors: std::collections::HashMap::new(),
         }
@@ -240,6 +247,8 @@ impl GanttConfig {
             show_hour:                  bool("show_hour").unwrap_or(def.show_hour),
             show_minute:                bool("show_minute").unwrap_or(def.show_minute),
             show_second:                bool("show_second").unwrap_or(def.show_second),
+            timeline_grid_auto:              bool("timeline_grid_auto").unwrap_or(def.timeline_grid_auto),
+            timeline_grid_manual_period_s:   i64("timeline_grid_manual_period_s").unwrap_or(def.timeline_grid_manual_period_s),
             nav_steps: {
                 val.get("nav_steps")
                     .and_then(|v| v.as_array())
@@ -372,6 +381,13 @@ show_hour   = {show_hour}
 show_minute = {show_minute}
 show_second = {show_second}
 
+# Grid line spacing: true = automatic (picks spacing from zoom level).
+# false = fixed spacing set by timeline_grid_manual_period_s below.
+timeline_grid_auto = {timeline_grid_auto}
+
+# Fixed seconds between grid lines when timeline_grid_auto is false.
+timeline_grid_manual_period_s = {timeline_grid_manual_period_s}
+
 # ── Navigation ────────────────────────────────────────────────────────────────
 # Each [[nav_steps]] entry adds one ◀/▶ button pair.
 # Buttons render: ◀ stepN … ◀ step1 | step1 ▶ … stepN ▶
@@ -428,6 +444,8 @@ Standby   = \"{standby_light}\"
             show_hour            = self.show_hour,
             show_minute          = self.show_minute,
             show_second          = self.show_second,
+            timeline_grid_auto            = self.timeline_grid_auto,
+            timeline_grid_manual_period_s = self.timeline_grid_manual_period_s,
             nav_steps_toml       = nav_steps_toml,
             field_colors_toml    = field_colors_toml,
             absent_dark          = hex(self.state_colors.absent),
