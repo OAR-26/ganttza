@@ -10,8 +10,9 @@ use crate::models::utils::date_converter::format_timestamp;
 use crate::models::utils::utils::{compare_string_with_number, get_job_gantt_colors, get_job_gantt_colors_for_str};
 use crate::views::components::job_details::JobDetailsWindow;
 use egui::{
-    pos2, Align2, Color32, CursorIcon, FontId, Id, LayerId, Order, Rect, Shape, Stroke,
+    pos2, Align, Align2, Color32, CursorIcon, FontId, Id, LayerId, Order, Rect, Shape, Stroke,
 };
+use egui::text::LayoutJob;
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 // ---------------------------------------------------------------------------
@@ -407,16 +408,40 @@ pub(super) fn paint_job_id_labels(info: &Info, options: &Options, rows: &[Painte
         let block_bottom = block.rows.last().unwrap().row_y + height;
         let block_rect = Rect::from_min_max(pos2(start_x, block_top), pos2(end_x, block_bottom))
             .intersect(chart_clip_rect);
-        if !block_rect.is_negative() {
-            info.painter
-                .with_clip_rect(block_rect)
-                .text(
-                    block_rect.center(),
-                    Align2::CENTER_CENTER,
-                    block.job_bar_label.clone(),
-                    font.clone(),
-                    Color32::BLACK,
-                );
+        if block_rect.is_negative() {
+            continue;
+        }
+
+        let painter = info.painter.with_clip_rect(block_rect);
+        let row_height = info.painter.fonts(|f| f.row_height(&font));
+        let max_lines = (block_rect.height() / row_height).floor() as usize;
+
+        if max_lines >= 2 {
+            // Vertically zoomed in enough for multiple lines — wrap the label
+            // instead of clipping it, so long labels stay fully readable.
+            let mut job = LayoutJob::single_section(
+                block.job_bar_label.clone(),
+                egui::TextFormat { font_id: font.clone(), color: Color32::BLACK, ..Default::default() },
+            );
+            job.wrap.max_width = (block_rect.width() - 4.0).max(0.0);
+            job.wrap.max_rows = max_lines;
+            job.halign = Align::Center;
+            let galley = info.painter.fonts(|f| f.layout_job(job));
+            // With Align::Center, epaint centers each row around job-local x=0
+            // using that row's own width (not `wrap.max_width`), so the galley's
+            // glyphs already straddle x=0 — anchor at block_rect's x-center
+            // directly. Only y needs the size-based centering (rows stack
+            // top-down from y=0, uncentered).
+            let pos = pos2(block_rect.center().x, block_rect.center().y - galley.size().y / 2.0);
+            painter.galley(pos, galley, Color32::BLACK);
+        } else {
+            painter.text(
+                block_rect.center(),
+                Align2::CENTER_CENTER,
+                block.job_bar_label.clone(),
+                font.clone(),
+                Color32::BLACK,
+            );
         }
     }
 }
