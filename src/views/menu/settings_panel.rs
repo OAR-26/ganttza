@@ -188,6 +188,14 @@ impl SettingsPanel {
                         ui.checkbox(&mut cfg.show_minute, "Minute");
                         ui.checkbox(&mut cfg.show_second, "Second");
                     });
+                    ui.checkbox(&mut cfg.timeline_grid_auto, "Automatic grid line spacing (based on zoom)");
+                    if !cfg.timeline_grid_auto {
+                        ui.horizontal(|ui| {
+                            ui.label("Line every:");
+                            ui.add(egui::DragValue::new(&mut cfg.timeline_grid_manual_period_s)
+                                .range(1..=i64::MAX).suffix(" s"));
+                        });
+                    }
                     ui.add_space(6.0);
 
                     // ── Navigation ───────────────────────────────────────────

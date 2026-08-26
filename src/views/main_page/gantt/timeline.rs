@@ -35,7 +35,7 @@ const GRID_LEVELS: &[GridLevel] = &[
 
 pub(super) fn timeline_header_height(options: &Options, usable_width: f32, text_height: f32) -> f32 {
     let max_lines = usable_width / 13.0;
-    let level = pick_grid_level(options.canvas_width_s, max_lines);
+    let level = pick_grid_level(options, max_lines);
     let split = level.medium_s < 3600;
     text_height * rows_shown(options, split) as f32 + 5.0
 }
@@ -52,11 +52,16 @@ fn rows_shown(options: &Options, split: bool) -> u8 {
     }
 }
 
-fn pick_grid_level(canvas_width_s: f32, max_lines: f32) -> GridLevel {
+fn pick_grid_level(options: &Options, max_lines: f32) -> GridLevel {
+    if !options.timeline_grid_auto {
+        // Manual mode: one fixed period, every line drawn at full (big) alpha.
+        let period_s = options.timeline_grid_manual_period_s.max(1);
+        return GridLevel { step_s: period_s, medium_s: period_s, big_s: period_s };
+    }
     // Target ~max_lines/10 medium labels on screen → ~130px spacing for any level.
     let max_labels = max_lines / 10.0;
     for &lvl in GRID_LEVELS {
-        if canvas_width_s / (lvl.medium_s as f32) <= max_labels {
+        if options.canvas_width_s / (lvl.medium_s as f32) <= max_labels {
             return lvl;
         }
     }
@@ -153,7 +158,7 @@ pub(super) fn paint_timeline_text_on_top(
     gutter_width: f32,
 ) {
     let max_lines = info.usable_width() / 13.0;
-    let level = pick_grid_level(options.canvas_width_s, max_lines);
+    let level = pick_grid_level(options, max_lines);
 
     let theme_colors = get_theme_colors(&info.ctx.style());
 
@@ -198,7 +203,7 @@ pub(super) fn paint_timeline(
     let alpha_multiplier = if info.ctx.style().visuals.dark_mode { 0.3 } else { 0.8 };
 
     let max_lines = info.usable_width() / 13.0;
-    let level = pick_grid_level(options.canvas_width_s, max_lines);
+    let level = pick_grid_level(options, max_lines);
 
     let num_tiny_lines = options.canvas_width_s / (level.step_s as f32);
     let zoom_factor = remap_clamp(num_tiny_lines, (0.1 * max_lines)..=max_lines, 1.0..=0.0);

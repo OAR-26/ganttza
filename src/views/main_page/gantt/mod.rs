@@ -235,6 +235,8 @@ impl Default for GanttChart {
         options.show_hour               = gantt_cfg.show_hour;
         options.show_minute             = gantt_cfg.show_minute;
         options.show_second             = gantt_cfg.show_second;
+        options.timeline_grid_auto             = gantt_cfg.timeline_grid_auto;
+        options.timeline_grid_manual_period_s  = gantt_cfg.timeline_grid_manual_period_s;
         options.job_label_min_width     = gantt_cfg.job_label_min_width;
         options.job_label_field         = gantt_cfg.job_label_field.clone();
         options.job_color_field         = gantt_cfg.job_color_field.clone();
@@ -550,6 +552,8 @@ impl View for GanttChart {
             self.options.show_hour               = cfg.show_hour;
             self.options.show_minute             = cfg.show_minute;
             self.options.show_second             = cfg.show_second;
+            self.options.timeline_grid_auto            = cfg.timeline_grid_auto;
+            self.options.timeline_grid_manual_period_s = cfg.timeline_grid_manual_period_s;
             self.options.job_label_min_width     = cfg.job_label_min_width;
             self.options.job_label_field         = cfg.job_label_field.clone();
             self.options.job_color_field         = cfg.job_color_field.clone();
