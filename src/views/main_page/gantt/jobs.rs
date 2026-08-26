@@ -427,11 +427,12 @@ pub(super) fn paint_job_id_labels(info: &Info, options: &Options, rows: &[Painte
             job.wrap.max_rows = max_lines;
             job.halign = Align::Center;
             let galley = info.painter.fonts(|f| f.layout_job(job));
-            // Rows are already horizontally centered within `wrap.max_width` by
-            // the layouter, so anchor at the block's left edge — not
-            // `galley.size()`, which is the tight content bbox and would
-            // double-center (shifting everything left).
-            let pos = pos2(block_rect.min.x + 2.0, block_rect.center().y - galley.size().y / 2.0);
+            // With Align::Center, epaint centers each row around job-local x=0
+            // using that row's own width (not `wrap.max_width`), so the galley's
+            // glyphs already straddle x=0 — anchor at block_rect's x-center
+            // directly. Only y needs the size-based centering (rows stack
+            // top-down from y=0, uncentered).
+            let pos = pos2(block_rect.center().x, block_rect.center().y - galley.size().y / 2.0);
             painter.galley(pos, galley, Color32::BLACK);
         } else {
             painter.text(
