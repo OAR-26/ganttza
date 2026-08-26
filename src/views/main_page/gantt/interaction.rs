@@ -1,6 +1,15 @@
 use super::types::{Info, Options};
 use egui::{lerp, PointerButton, Response};
 
+// Caps how much a single scroll/drag event can change zoom, regardless of how
+// large the raw input delta is (some mice/trackpads report huge deltas per
+// notch on some platforms). Without this, one wheel tick could multiply
+// canvas_width_s enough to skip straight over several timeline grid levels
+// (e.g. week -> month -> 2mo -> 4mo in one notch) instead of stepping through
+// them. exp(0.35) ≈ 1.42x, so a single event can change the visible width by
+// at most ~42% — still fast over a sustained scroll, but never a level-skip.
+const MAX_ZOOM_STEP_EXPONENT: f32 = 0.35;
+
 pub(super) fn interact_with_canvas(options: &mut Options, response: &Response, info: &Info) {
     // Déplacement horizontal du Gantt avec le clic gauche
     if response.dragged_by(PointerButton::Primary) && response.drag_delta().x != 0.0 {
@@ -12,7 +21,9 @@ pub(super) fn interact_with_canvas(options: &mut Options, response: &Response, i
         let (mods, scroll_y) = info.ctx.input(|i| (i.modifiers, i.smooth_scroll_delta.y));
         // Alt + molette verticale : zoom vertical sur la hauteur des lignes
         if mods.alt && !(mods.ctrl || mods.command) && scroll_y != 0.0 {
-            let zoom_factor_y = (-scroll_y * options.scroll_zoom_sensitivity).exp();
+            let exponent_y = (-scroll_y * options.scroll_zoom_sensitivity)
+                .clamp(-MAX_ZOOM_STEP_EXPONENT, MAX_ZOOM_STEP_EXPONENT);
+            let zoom_factor_y = exponent_y.exp();
             options.rect_height = (options.rect_height * zoom_factor_y).clamp(options.row_height_min, options.row_height_max);
 
             // On consomme le scroll pour éviter qu’il soit réutilisé ailleurs
@@ -31,7 +42,9 @@ pub(super) fn interact_with_canvas(options: &mut Options, response: &Response, i
         if zoom_factor == 1.0 {
             let (mods, scroll_y) = info.ctx.input(|i| (i.modifiers, i.smooth_scroll_delta.y));
             if (mods.ctrl || mods.command) && scroll_y != 0.0 {
-                zoom_factor *= (-scroll_y * options.scroll_zoom_sensitivity).exp();
+                let exponent = (-scroll_y * options.scroll_zoom_sensitivity)
+                    .clamp(-MAX_ZOOM_STEP_EXPONENT, MAX_ZOOM_STEP_EXPONENT);
+                zoom_factor *= exponent.exp();
             }
         }
         // Drag vertical avec clic droit : zoom temporel
