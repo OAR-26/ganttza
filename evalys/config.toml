@@ -43,7 +43,7 @@ now_line_color = "#dc0000"
 # ── Zoom limits ───────────────────────────────────────────────────────────────
 
 # Maximum number of seconds visible in the Gantt window (zoom-out limit). 172800 = 2 days.
-zoom_max_seconds = 172800
+zoom_max_seconds = 15552000
 
 # Minimum number of seconds visible in the Gantt window (zoom-in limit)
 zoom_min_seconds = 5
@@ -68,7 +68,7 @@ gutter_max_width = 650
 job_label_min_width = 30
 
 # Field displayed inside job bars. Options: id, owner, name, command, queue, project, state, walltime, job_type
-job_label_field = "id"
+job_label_field = "name"
 
 # Job color mode: "random" (hash by id) or "field" (by field value with optional color map)
 job_color_mode = "random"
@@ -90,16 +90,16 @@ job_block_border_width = 0.5
 show_year   = true
 show_month  = true
 show_day    = true
-show_hour   = true
-show_minute = true
-show_second = true
+show_hour   = false
+show_minute = false
+show_second = false
 
 # Grid line spacing: true = automatic (picks spacing from zoom level).
 # false = fixed spacing set by timeline_grid_manual_period_s below.
-timeline_grid_auto = true
+timeline_grid_auto = false
 
 # Fixed seconds between grid lines when timeline_grid_auto is false.
-timeline_grid_manual_period_s = 3600
+timeline_grid_manual_period_s = 2628000
 
 # ── Navigation ────────────────────────────────────────────────────────────────
 # Each [[nav_steps]] entry adds one ◀/▶ button pair.

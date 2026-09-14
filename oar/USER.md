@@ -1,4 +1,4 @@
-# liveOAR — User Manual
+# oar — User Manual
 
 Live OAR cluster viewer. Connects to an HPC cluster over SSH and monitors jobs in real time.
 
@@ -21,19 +21,19 @@ Authentication is not required to view data. Only admin operations need it:
 ### Native (desktop)
 
 ```bash
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release
 ```
 
 ### Web (WASM) — live data
 
 **Terminal 1 - backend:**
 ```bash
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release -- --serve
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release -- --serve
 ```
 
 **Terminal 2 - frontend:**
 ```bash
-cd liveOAR && trunk serve
+cd oar && trunk serve
 ```
 
 Access at `http://localhost:8080`.
@@ -182,7 +182,7 @@ Active presets appear in **Filters → Cluster preset**.
 
 ## Feature Summary
 
-- Real-time OAR cluster monitoring over SSH
+- Real-time OAR cluster monitoring over SSH (OAR2 and OAR3 supported via `GOARD_OAR_VERSION`)
 - Auto-refresh with configurable interval (30 s / 1 min / 5 min / Never)
 - Instant refresh ⟳ button
 - Web (WASM) build with HTTP backend for browser access

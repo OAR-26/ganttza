@@ -4,9 +4,9 @@ Gantt-based dashboard for monitoring HPC cluster jobs, built with Rust + egui/ef
 
 | Crate | Purpose |
 |-------|---------|
-| **evalys-rs** | Import and visualize static OAR/energy JSON files |
-| **liveOAR** | Connect to a live OAR cluster over SSH in real time |
-| **goard_core** | Shared rendering library (Gantt, Dashboard, XY panel, filters) |
+| **evalys** | Import and visualize static OAR/energy JSON files |
+| **oar** | Connect to a live OAR cluster over SSH in real time |
+| **ganttza** | Shared rendering library (Gantt, Dashboard, XY panel, filters) |
 
 ---
 
@@ -14,9 +14,9 @@ Gantt-based dashboard for monitoring HPC cluster jobs, built with Rust + egui/ef
 
 | | User manual | Developer reference |
 |-|-------------|---------------------|
-| **evalys-rs** | [evalys-rs/USER.md](evalys-rs/USER.md) | [evalys-rs/DEV.md](evalys-rs/DEV.md) |
-| **liveOAR** | [liveOAR/USER.md](liveOAR/USER.md) | [liveOAR/DEV.md](liveOAR/DEV.md) |
-| **goard_core** | — | [goard_core/DEV.md](goard_core/DEV.md) |
+| **evalys** | [evalys/USER.md](evalys/USER.md) | [evalys/DEV.md](evalys/DEV.md) |
+| **oar** | [oar/USER.md](oar/USER.md) | [oar/DEV.md](oar/DEV.md) |
+| **ganttza** | — | [ganttza/DEV.md](ganttza/DEV.md) |
 
 ---
 
@@ -25,37 +25,37 @@ Gantt-based dashboard for monitoring HPC cluster jobs, built with Rust + egui/ef
 ### Prerequisites
 
 - Rust + Cargo
-- SSH access to an HPC cluster *(liveOAR only)*
+- SSH access to an HPC cluster *(oar only)*
 
-### evalys-rs (static file viewer)
-
-```bash
-cargo run -p evalys-rs --release
-cargo run -p evalys-rs --release -- examples/oar.json
-cargo run -p evalys-rs --release -- examples/oar.json+examples/energy.json
-```
-
-### liveOAR - native
+### evalys (static file viewer)
 
 ```bash
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release
+cargo run -p evalys --release
+cargo run -p evalys --release -- examples/oar.json
+cargo run -p evalys --release -- examples/oar.json+examples/energy.json
 ```
 
-### liveOAR - web (WASM)
+### oar - native
+
+```bash
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release
+```
+
+### oar - web (WASM)
 
 ```bash
 # Terminal 1 - backend (SSH + HTTP server)
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release -- --serve
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release -- --serve
 
 # Terminal 2 - frontend (WASM in browser)
 rustup target add wasm32-unknown-unknown
 cargo install --locked trunk
-cd liveOAR && trunk serve
+cd oar && trunk serve
 ```
 
 Open `http://localhost:8080`. Replace `localhost` with the machine IP for other devices on the same network.
 
-See [liveOAR/DEV.md](liveOAR/DEV.md) for the full web architecture.
+See [oar/DEV.md](oar/DEV.md) for the full web architecture.
 
 ---
 

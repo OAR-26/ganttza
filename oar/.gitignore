@@ -1,0 +1,12 @@
+/target/
+/dist/
+
+/data/
+
+**/*.rs.bk
+*.exe
+*.dll
+*.so
+*.dylib
+
+options.json

@@ -93,7 +93,8 @@ fn load_views_config() -> ViewsConfig {
     #[cfg(target_arch = "wasm32")]
     let content = include_str!("../../../../views.json").to_string();
     #[cfg(not(target_arch = "wasm32"))]
-    let Ok(content) = std::fs::read_to_string("ganttza/views.json") else { return fallback; };
+    let content = std::fs::read_to_string("ganttza/views.json")
+        .unwrap_or_else(|_| include_str!("../../../../views.json").to_string());
     let Ok(val) = serde_json::from_str::<serde_json::Value>(&content) else { return fallback; };
     if val.is_array() {
         // Old format: bare array of views — no presets
@@ -228,6 +229,14 @@ impl Default for GanttChart {
         options.hatch_spacing           = gantt_cfg.hatch_spacing;
         options.job_block_border        = gantt_cfg.job_block_border;
         options.job_block_border_width  = gantt_cfg.job_block_border_width;
+        options.show_year               = gantt_cfg.show_year;
+        options.show_month              = gantt_cfg.show_month;
+        options.show_day                = gantt_cfg.show_day;
+        options.show_hour               = gantt_cfg.show_hour;
+        options.show_minute             = gantt_cfg.show_minute;
+        options.show_second             = gantt_cfg.show_second;
+        options.timeline_grid_auto             = gantt_cfg.timeline_grid_auto;
+        options.timeline_grid_manual_period_s  = gantt_cfg.timeline_grid_manual_period_s;
         options.job_label_min_width     = gantt_cfg.job_label_min_width;
         options.job_label_field         = gantt_cfg.job_label_field.clone();
         options.job_color_field         = gantt_cfg.job_color_field.clone();
@@ -537,6 +546,14 @@ impl View for GanttChart {
             self.options.hatch_spacing           = cfg.hatch_spacing;
             self.options.job_block_border        = cfg.job_block_border;
             self.options.job_block_border_width  = cfg.job_block_border_width;
+            self.options.show_year               = cfg.show_year;
+            self.options.show_month              = cfg.show_month;
+            self.options.show_day                = cfg.show_day;
+            self.options.show_hour               = cfg.show_hour;
+            self.options.show_minute             = cfg.show_minute;
+            self.options.show_second             = cfg.show_second;
+            self.options.timeline_grid_auto            = cfg.timeline_grid_auto;
+            self.options.timeline_grid_manual_period_s = cfg.timeline_grid_manual_period_s;
             self.options.job_label_min_width     = cfg.job_label_min_width;
             self.options.job_label_field         = cfg.job_label_field.clone();
             self.options.job_color_field         = cfg.job_color_field.clone();

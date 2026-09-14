@@ -1,10 +1,10 @@
 [package]
-name = "liveOAR"
+name = "oar"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "liveOAR"
+name = "oar"
 path = "src/main.rs"
 
 [dependencies]

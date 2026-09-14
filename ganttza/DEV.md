@@ -1,6 +1,6 @@
-# goard_core — Developer Reference
+# ganttza — Developer Reference
 
-Shared rendering library used by both `evalys-rs` and `liveOAR`. Pure UI and data model — no SSH, no file I/O, no energy estimation.
+Shared rendering library used by both `evalys` and `oar`. Pure UI and data model — no SSH, no file I/O, no energy estimation.
 
 ---
 
@@ -20,9 +20,9 @@ Shared rendering library used by both `evalys-rs` and `liveOAR`. Pure UI and dat
 
 ```
 Cargo.toml            — workspace root
-├── goard_core/       — shared rendering library (this crate)
-├── evalys-rs/        — static file viewer binary
-└── liveOAR/          — live OAR cluster viewer binary
+├── ganttza/          — shared rendering library (this crate)
+├── evalys/           — static file viewer binary
+└── oar/              — live OAR cluster viewer binary
 ```
 
 ---
@@ -30,7 +30,7 @@ Cargo.toml            — workspace root
 ## Module Structure
 
 ```
-goard_core/
+ganttza/
 ├── config.toml                         — Gantt config (colors, timespan)
 ├── views.json                          — saved Gantt views + leaf info presets
 └── src/
@@ -85,7 +85,7 @@ goard_core/
 
 ## State Architecture (`ApplicationContext`)
 
-`ApplicationContext` is the central container owned by each binary and passed into every `goard_core` render call. It is split into sub-structs:
+`ApplicationContext` is the central container owned by each binary and passed into every `ganttza` render call. It is split into sub-structs:
 
 | Field | Type | Content |
 |-------|------|---------|
@@ -98,12 +98,12 @@ Session flags (`view_type`, `user_connected`, `show_xy_panel`, `show_gantt_panel
 
 ### `plot_series`
 
-`JobData.plot_series: Vec<(String, Vec<(i64, f64)>)>` is the generic XY data fed to the XY panel. `goard_core` renders whatever the binary puts there:
+`JobData.plot_series: Vec<(String, Vec<(i64, f64)>)>` is the generic XY data fed to the XY panel. `ganttza` renders whatever the binary puts there:
 
 | Binary | What it puts in `plot_series` |
 |--------|-------------------------------|
-| evalys-rs | Estimated series from jobs and/or raw measured series |
-| liveOAR | Estimated series from live jobs |
+| evalys | Estimated series from jobs and/or raw measured series |
+| oar | Estimated series from live jobs |
 
 ---
 
@@ -207,7 +207,7 @@ Standby = "#008888"
 
 ## XY Panel
 
-The XY panel is a generic secondary plot below the Gantt. `goard_core` renders whatever is in `app.data.plot_series` — it has no concept of "energy" or "estimation." The binary is responsible for populating the series.
+The XY panel is a generic secondary plot below the Gantt. `ganttza` renders whatever is in `app.data.plot_series` — it has no concept of "energy" or "estimation." The binary is responsible for populating the series.
 
 ### Gantt ↔ XY sync
 
@@ -219,7 +219,7 @@ The separator between the Gantt and XY panel is vertically draggable; `XyPanelSt
 
 ## Tests
 
-Run with `cargo test -p goard_core`.
+Run with `cargo test -p ganttza`.
 
 **`src/models/data_structure/job_data.rs`** — 5 tests
 

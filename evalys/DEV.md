@@ -1,4 +1,4 @@
-# evalys-rs — Developer Reference
+# evalys — Developer Reference
 
 Static file viewer for OAR simulation, energy series, and event JSON files.
 
@@ -7,7 +7,7 @@ Static file viewer for OAR simulation, energy series, and event JSON files.
 ## Module Structure
 
 ```
-evalys-rs/
+evalys/
 ├── file_types/             — JSON schemas for supported file types (embedded at compile time)
 │   ├── oar.json
 │   ├── energy_series.json
@@ -144,7 +144,7 @@ On tab open, cache is checked by path first, then hash. Match found → preferen
 
 | Event | Code location |
 |-------|---------------|
-| Tab switch | `render_compact_toolbar` and `render` in `goard_core` |
+| Tab switch | `render_compact_toolbar` and `render` in `ganttza` |
 | Tab close | `close_ds` handler in `render_data_source_tabs` |
 | App exit | `eframe::App::on_exit` → `flush_all_tab_states` |
 
@@ -152,7 +152,7 @@ On tab open, cache is checked by path first, then hash. Match found → preferen
 
 ### Cache file
 
-`evalys-rs/tab_states.json` — written in the evalys-rs working directory. Gitignored.
+`evalys/tab_states.json` — written in the evalys working directory. Gitignored.
 
 ```json
 {
@@ -186,7 +186,7 @@ Max 200 entries (FIFO). Dedup key is the hash: if a file is moved, the stored pa
 
 ## Configuration
 
-### `evalys-rs/sim_config.toml`
+### `evalys/sim_config.toml`
 
 SSH connection and display preferences. Written by the Settings panel.
 
@@ -194,7 +194,7 @@ SSH connection and display preferences. Written by the Settings panel.
 
 ## Tests
 
-Run with `cargo test -p evalys-rs`.
+Run with `cargo test -p evalys`.
 
 **`src/energy_estimate.rs`** — 7 tests
 
