@@ -273,6 +273,42 @@ impl SettingsPanel {
                         .fill(ui.visuals().selection.bg_fill);
                     if ui.add(apply_btn).clicked() { apply = true; }
                     if ui.button("Cancel").clicked() { cancel = true; }
+                    #[cfg(not(target_arch = "wasm32"))]
+                    if ui.button("Import").clicked() {
+                        if let Some(path) = rfd::FileDialog::new()
+                            .set_title("Import config")
+                            .add_filter("TOML", &["toml"])
+                            .pick_file()
+                        {
+                            if let Ok(content) = std::fs::read_to_string(&path) {
+                                let imported = GanttConfig::from_toml_str(&content);
+                                let mode = if imported.job_color_mode == "field" {
+                                    crate::views::components::gantt_job_color::JobColorEnum::ByField
+                                } else {
+                                    crate::views::components::gantt_job_color::JobColorEnum::Random
+                                };
+                                self.draft = Some((imported, mode));
+                            }
+                        }
+                    }
+                    #[cfg(not(target_arch = "wasm32"))]
+                    if ui.button("Export").clicked() {
+                        if let Some((cfg, mode)) = &self.draft {
+                            let mut export_cfg = cfg.clone();
+                            export_cfg.job_color_mode = match mode {
+                                crate::views::components::gantt_job_color::JobColorEnum::ByField => "field".to_string(),
+                                crate::views::components::gantt_job_color::JobColorEnum::Random  => "random".to_string(),
+                            };
+                            if let Some(path) = rfd::FileDialog::new()
+                                .set_title("Export config")
+                                .add_filter("TOML", &["toml"])
+                                .set_file_name("config.toml")
+                                .save_file()
+                            {
+                                export_cfg.save_to(&path.to_string_lossy());
+                            }
+                        }
+                    }
                 });
             });
 

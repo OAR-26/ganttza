@@ -1,5 +1,18 @@
 use serde::{Deserialize, Serialize};
 
+static CONFIG_PATH: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+
+/// Override the config file path used by `GanttConfig::load()` and `save()`.
+/// Call once at startup before `App::new()`. Subsequent calls are no-ops.
+pub fn set_config_path(path: String) {
+    let _ = CONFIG_PATH.set(path);
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn active_config_path() -> &'static str {
+    CONFIG_PATH.get().map(|s| s.as_str()).unwrap_or("ganttza/config.toml")
+}
+
 /// RGB color parsed from a hex string like "#88ffff".
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct RgbColor(pub u8, pub u8, pub u8);
@@ -161,13 +174,21 @@ impl Default for GanttConfig {
 impl GanttConfig {
     pub fn load() -> Self {
         #[cfg(target_arch = "wasm32")]
-        let content = include_str!("../../../config.toml").to_string();
+        return Self::from_toml_str(include_str!("../../../config.toml"));
         #[cfg(not(target_arch = "wasm32"))]
-        let content = match std::fs::read_to_string("ganttza/config.toml") {
-            Ok(c) => c,
-            Err(_) => return Self::default(),
-        };
-        let val: toml::Value = match toml::from_str(&content) {
+        {
+            let content = match std::fs::read_to_string(active_config_path()) {
+                Ok(c) => c,
+                Err(_) => return Self::default(),
+            };
+            Self::from_toml_str(&content)
+        }
+    }
+
+    /// Parse a TOML string into a GanttConfig, reading only the top-level
+    /// ganttza keys and ignoring unknown sections (e.g. `[oar]`, `[evalys]`).
+    pub fn from_toml_str(content: &str) -> Self {
+        let val: toml::Value = match toml::from_str(content) {
             Ok(v) => v,
             Err(_) => return Self::default(),
         };
@@ -269,6 +290,11 @@ impl GanttConfig {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn save(&self) {
+        self.save_to(active_config_path());
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn save_to(&self, path: &str) {
         fn hex(c: RgbColor) -> String { format!("#{:02x}{:02x}{:02x}", c.0, c.1, c.2) }
         let nav_steps_toml: String = self.nav_steps.iter()
             .map(|(n, u)| format!("\n[[nav_steps]]\nn    = {}\nunit = \"{}\"\n", n, u))
@@ -457,6 +483,6 @@ Standby   = \"{standby_light}\"
             dead_light           = hex(self.state_colors_light.dead),
             standby_light        = hex(self.state_colors_light.standby),
         );
-        let _ = std::fs::write("ganttza/config.toml", content);
+        let _ = std::fs::write(path, content);
     }
 }

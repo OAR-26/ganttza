@@ -15,6 +15,31 @@ mod web_settings;
 fn main() -> Result<(), eframe::Error> {
     let args: Vec<String> = std::env::args().collect();
 
+    // --config <path>: unified config file (ganttza + [oar] section)
+    if let Some(config_path) = args.iter()
+        .position(|a| a == "--config")
+        .and_then(|i| args.get(i + 1))
+    {
+        ganttza::set_config_path(config_path.clone());
+        // Apply [oar] section as env-var fallbacks (env vars take priority)
+        if let Ok(content) = std::fs::read_to_string(config_path) {
+            if let Ok(val) = toml::from_str::<toml::Value>(&content) {
+                if let Some(oar) = val.get("oar").and_then(|v| v.as_table()) {
+                    if std::env::var("GOARD_SSH_HOST").is_err() {
+                        if let Some(host) = oar.get("ssh_host").and_then(|v| v.as_str()) {
+                            unsafe { std::env::set_var("GOARD_SSH_HOST", host); }
+                        }
+                    }
+                    if std::env::var("GOARD_OAR_VERSION").is_err() {
+                        if let Some(ver) = oar.get("oar_version").and_then(|v| v.as_str()) {
+                            unsafe { std::env::set_var("GOARD_OAR_VERSION", ver); }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     if args.iter().any(|a| a == "--serve") {
         let port: u16 = args.iter()
             .position(|a| a == "--port")
