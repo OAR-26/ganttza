@@ -1,10 +1,10 @@
 [package]
-name = "evalys-rs"
+name = "evalys"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "evalys-rs"
+name = "evalys"
 path = "src/main.rs"
 
 [dependencies]

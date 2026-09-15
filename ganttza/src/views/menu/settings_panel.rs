@@ -154,7 +154,7 @@ impl SettingsPanel {
                     ui.horizontal(|ui| {
                         ui.label("Max (s):");
                         ui.add(egui::DragValue::new(&mut cfg.zoom_max_seconds)
-                            .range(60.0..=2592000.0).suffix(" s"));
+                            .range(60.0..=f64::MAX).suffix(" s"));
                     });
                     ui.horizontal(|ui| {
                         ui.label("Min (s):");
@@ -176,6 +176,26 @@ impl SettingsPanel {
                         ui.add(egui::DragValue::new(&mut cfg.zoom_animation_duration)
                             .range(0.1..=3.0).speed(0.05));
                     });
+                    ui.add_space(6.0);
+
+                    // ── Timeline ─────────────────────────────────────────────
+                    ui.heading("Timeline");
+                    ui.horizontal(|ui| {
+                        ui.checkbox(&mut cfg.show_year, "Year");
+                        ui.checkbox(&mut cfg.show_month, "Month");
+                        ui.checkbox(&mut cfg.show_day, "Day");
+                        ui.checkbox(&mut cfg.show_hour, "Hour");
+                        ui.checkbox(&mut cfg.show_minute, "Minute");
+                        ui.checkbox(&mut cfg.show_second, "Second");
+                    });
+                    ui.checkbox(&mut cfg.timeline_grid_auto, "Automatic grid line spacing (based on zoom)");
+                    if !cfg.timeline_grid_auto {
+                        ui.horizontal(|ui| {
+                            ui.label("Line every:");
+                            ui.add(egui::DragValue::new(&mut cfg.timeline_grid_manual_period_s)
+                                .range(1..=i64::MAX).suffix(" s"));
+                        });
+                    }
                     ui.add_space(6.0);
 
                     // ── Navigation ───────────────────────────────────────────
@@ -217,7 +237,7 @@ impl SettingsPanel {
                         ui.add(egui::DragValue::new(&mut cfg.job_label_min_width).range(0.0..=200.0));
                     });
                     ui.horizontal(|ui| {
-                        ui.label("Job bar label field:");
+                        ui.label("Job bar label field (leave empty for none):");
                         ui.text_edit_singleline(&mut cfg.job_label_field);
                     });
                     ui.horizontal(|ui| {

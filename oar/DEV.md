@@ -1,13 +1,13 @@
-# liveOAR — Developer Reference
+# oar — Developer Reference
 
-Live OAR cluster viewer. Polls a cluster over SSH and streams job data into the shared `goard_core` UI. Supports both a native desktop build and a web (WASM) build backed by an HTTP server.
+Live OAR cluster viewer. Polls a cluster over SSH and streams job data into the shared `ganttza` UI. Supports both a native desktop build and a web (WASM) build backed by an HTTP server.
 
 ---
 
 ## Module Structure
 
 ```
-liveOAR/
+oar/
 ├── Trunk.toml              — trunk dev-server config + /api/* proxy
 ├── presets.json            — cluster filter presets
 └── src/
@@ -18,7 +18,7 @@ liveOAR/
     ├── refresh_coordinator.rs — MPSC channels + shared Arc<Mutex<_>> state
     ├── auth_view.rs        — login form UI
     ├── cluster_presets.rs  — cluster preset CRUD + selector widget
-    ├── energy_estimate.rs  — estimate_from_jobs (same logic as evalys-rs)
+    ├── energy_estimate.rs  — estimate_from_jobs (same logic as evalys)
     ├── mocker.rs           — fake data for testing without SSH
     ├── api_types.rs        — ApiSnapshot (jobs + resources + dead_intervals), used by server + WASM
     └── server.rs           — axum HTTP server (native only)
@@ -36,7 +36,7 @@ App::new()
         └── update_periodically()
               └── thread::spawn ──► loop:
                     1. Sleep refresh_rate seconds
-                    2. SSH fetch → write /tmp/liveOAR_data.json (or liveOAR/data/data.json)
+                    2. SSH fetch → write /tmp/oar_data.json (or oar/data/data.json)
                     3. Parse jobs + resources + dead_intervals
                     4. Send through MPSC channels
 
@@ -91,7 +91,7 @@ The browser cannot do SSH directly, so the web build splits into two processes:
 │  Frontend  (trunk serve)    │ ─────────────────────────────────────► │  Backend  (cargo run --serve)│
 │  WASM in browser            │                                        │  axum on 0.0.0.0:3030        │
 │  egui/eframe rendering      │ ◄───────────────────────────────────── │  SSH → OAR cluster           │
-│  gloo-net HTTP fetch        │     ApiSnapshot { jobs, resources,     │  writes /tmp/liveOAR_data.json│
+│  gloo-net HTTP fetch        │     ApiSnapshot { jobs, resources,     │  writes /tmp/oar_data.json   │
 │  gloo-timers periodic loop  │                  dead_intervals }      │                              │
 └─────────────────────────────┘                                        └──────────────────────────────┘
          ↑
@@ -101,13 +101,13 @@ The browser cannot do SSH directly, so the web build splits into two processes:
 
 ### Backend (`--serve` mode)
 
-`cargo run -p liveOAR -- --serve [--port 3030]`
+`cargo run -p oar -- --serve [--port 3030]`
 
 Single endpoint: `GET /api/data?start=<unix_ts>&end=<unix_ts>`
 
 On each request:
 1. `spawn_blocking` runs `get_current_jobs_for_period` (synchronous SSH)
-2. Parses `jobs`, `resources`, `dead_intervals` from `/tmp/liveOAR_data.json`
+2. Parses `jobs`, `resources`, `dead_intervals` from `/tmp/oar_data.json`
 3. Returns `ApiSnapshot` as JSON
 
 No background polling, no cache. The frontend drives timing.
@@ -144,20 +144,33 @@ If the backend is not reachable (`fetch_snapshot` returns `None`), the WASM app 
 
 ## Authentication
 
-Auth lives entirely in `liveOAR` — `goard_core` has no concept of it.
+Auth lives entirely in `oar` — `ganttza` has no concept of it.
 
 - `src/auth_view.rs` — login form UI; hardcoded check: `username == "admin" && password == "admin"`
 - `App.connected_as: Option<String>` — set on login, cleared on logout
 - `is_admin` is derived as `connected_as.is_some()` in `app.rs`
-- `goard_core`'s Gantt renders create/edit/delete view panels always; `liveOAR/app.rs` gates the Admin button behind `is_admin`
+- `ganttza`'s Gantt renders create/edit/delete view panels always; `oar/app.rs` gates the Admin button behind `is_admin`
 
 **Do not deploy to production without replacing this mechanism.**
 
 ---
 
+## OAR Version Support
+
+`oar_fetch.rs` supports multiple OAR API versions via the `OarVersion` trait:
+
+| Env var | Value | Behavior |
+|---------|-------|----------|
+| `GOARD_OAR_VERSION` | `2` (default) | OAR2 API endpoints and JSON format |
+| `GOARD_OAR_VERSION` | `3` | OAR3 API endpoints and JSON format |
+
+`make_oar_version()` reads the env var at startup and returns a boxed `OarVersion` impl.
+
+---
+
 ## Configuration
 
-### `liveOAR/presets.json`
+### `oar/presets.json`
 
 Cluster filter presets:
 
@@ -172,15 +185,15 @@ Cluster filter presets:
 SSH host for the OAR cluster. Set before running either mode:
 
 ```bash
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release
-GOARD_SSH_HOST=grenoble.g5k cargo run -p liveOAR --release -- --serve
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release
+GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release -- --serve
 ```
 
 ---
 
 ## Tests
 
-Run with `cargo test -p liveOAR`.
+Run with `cargo test -p oar`.
 
 **`src/energy_estimate.rs`** — 5 tests
 

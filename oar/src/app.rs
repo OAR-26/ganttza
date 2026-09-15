@@ -8,6 +8,7 @@ use ganttza::views::menu::menu::Menu;
 use ganttza::views::menu::tools::Tools;
 use ganttza::views::view::View;
 use ganttza::models::data_structure::application_context::ApplicationContext;
+use ganttza::models::data_structure::application_options::ApplicationOptions;
 use eframe::egui::{self, CentralPanel, TopBottomPanel};
 
 pub struct App {
@@ -25,10 +26,12 @@ pub struct App {
     /// Triggers an immediate API fetch on the first main-view frame so the
     /// gantt is populated as soon as auth is dismissed (correct window known).
     first_main_frame: bool,
+    #[cfg(not(target_arch = "wasm32"))]
+    native_opts: ApplicationOptions,
 }
 
 impl App {
-    pub fn new() -> Self {
+    pub fn new(native_opts: Option<ApplicationOptions>) -> Self {
         let mut application_context = ApplicationContext::default();
         application_context.show_all_resources_row = true;
         #[cfg(target_arch = "wasm32")]
@@ -41,7 +44,9 @@ impl App {
         #[cfg(target_arch = "wasm32")]
         let menu = Menu::with_options(crate::web_settings::load());
         #[cfg(not(target_arch = "wasm32"))]
-        let menu = Menu::default();
+        let native_opts = native_opts.unwrap_or_default();
+        #[cfg(not(target_arch = "wasm32"))]
+        let menu = Menu::with_options(native_opts.clone());
 
         App {
             secret: Secret::default(),
@@ -56,6 +61,8 @@ impl App {
             auth_active: true,
             connected_as: None,
             first_main_frame: true,
+            #[cfg(not(target_arch = "wasm32"))]
+            native_opts,
         }
     }
 }
@@ -230,8 +237,7 @@ impl eframe::App for App {
             #[cfg(target_arch = "wasm32")]
             crate::web_settings::save(&opts);
             #[cfg(not(target_arch = "wasm32"))]
-            let _ = serde_json::to_string(&opts)
-                .map(|json| std::fs::write("options.json", json));
+            { self.native_opts = opts; }
         }
 
         // Timeline navigation (pan/zoom/jump) asked for fresher data — skip if paused.
@@ -243,4 +249,11 @@ impl eframe::App for App {
     }
 
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {}
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn save(&mut self, storage: &mut dyn eframe::Storage) {
+        if let Ok(json) = serde_json::to_string(&self.native_opts) {
+            storage.set_string("oar_options", json);
+        }
+    }
 }

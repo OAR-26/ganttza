@@ -35,7 +35,13 @@ fn main() -> Result<(), eframe::Error> {
     eframe::run_native(
         &ganttza::window_title(),
         options,
-        Box::new(|_cc| Ok(Box::new(app::App::new()))),
+        Box::new(|cc| {
+            use ganttza::models::data_structure::application_options::ApplicationOptions;
+            let opts = cc.storage
+                .and_then(|s| s.get_string("oar_options"))
+                .and_then(|json| serde_json::from_str::<ApplicationOptions>(&json).ok());
+            Ok(Box::new(app::App::new(opts)))
+        }),
     )
 }
 
@@ -63,7 +69,7 @@ fn main() {
             .start(
                 canvas,
                 web_options,
-                Box::new(|_cc| Ok(Box::new(app::App::new()))),
+                Box::new(|_cc| Ok(Box::new(app::App::new(None)))),
             )
             .await;
 

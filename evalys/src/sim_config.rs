@@ -28,7 +28,7 @@ fn default_colors() -> Vec<[u8; 3]> {
 /// of this; it falls back to a deterministic per-index color when none is
 /// set. This setting lives entirely in evalys-rs's own config file.
 pub fn load_energy_series_colors() -> Vec<[u8; 3]> {
-    match std::fs::read_to_string("evalys-rs/sim_config.toml") {
+    match std::fs::read_to_string("evalys/sim_config.toml") {
         Ok(content) => toml::from_str::<toml::Value>(&content)
             .ok()
             .and_then(|v| {
@@ -45,11 +45,11 @@ pub fn load_energy_series_colors() -> Vec<[u8; 3]> {
 pub fn save_energy_series_colors(colors: &[[u8; 3]]) {
     let series: String = colors.iter().map(|&c| format!("    \"{}\",\n", rgb_to_hex(c))).collect();
     let content = format!(
-        "# evalys-rs-only settings. goard_core's config.toml has no notion of\n\
+        "# evalys-only settings. goard_core's config.toml has no notion of\n\
          # this — it falls back to a deterministic per-index color when none is set.\n\n\
          # Color palette (hex) for multi-series energy lines. Cycles if more series than entries.\n\
          energy_series_colors = [\n{}]\n",
         series
     );
-    let _ = std::fs::write("evalys-rs/sim_config.toml", content);
+    let _ = std::fs::write("evalys/sim_config.toml", content);
 }

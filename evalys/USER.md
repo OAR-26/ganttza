@@ -1,4 +1,4 @@
-# evalys-rs — User Manual
+# evalys — User Manual
 
 Static file viewer for OAR simulation, energy series, and event JSON files.
 
@@ -179,7 +179,7 @@ From the group tab:
 
 ## Per-file Preferences
 
-evalys-rs automatically saves and restores Gantt preferences per imported file.
+evalys automatically saves and restores Gantt preferences per imported file.
 
 | Preference | What is saved |
 |------------|--------------|
@@ -193,7 +193,7 @@ evalys-rs automatically saves and restores Gantt preferences per imported file.
 
 **File identity:** tracked by absolute path AND a content fingerprint (hash of the first 8 KB). Renaming or moving the file → preferences are still found via hash.
 
-Stored in `evalys-rs/tab_states.json` (local to your machine, gitignored).
+Stored in `evalys/tab_states.json` (local to your machine, gitignored).
 
 ---
 
