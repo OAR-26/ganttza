@@ -35,9 +35,9 @@ fn default_colors() -> Vec<[u8; 3]> {
     ]
 }
 
-/// Color palette for multi-series energy lines — `goard_core` has no notion
+/// Color palette for multi-series energy lines — `ganttza` has no notion
 /// of this; it falls back to a deterministic per-index color when none is
-/// set. This setting lives entirely in evalys-rs's own config file.
+/// set. This setting lives entirely in evalys's own config file.
 pub fn load_energy_series_colors() -> Vec<[u8; 3]> {
     match std::fs::read_to_string(active_config_path()) {
         Ok(content) => toml::from_str::<toml::Value>(&content)
@@ -56,7 +56,7 @@ pub fn load_energy_series_colors() -> Vec<[u8; 3]> {
 pub fn save_energy_series_colors(colors: &[[u8; 3]]) {
     let series: String = colors.iter().map(|&c| format!("    \"{}\",\n", rgb_to_hex(c))).collect();
     let content = format!(
-        "# evalys-only settings. goard_core's config.toml has no notion of\n\
+        "# evalys-only settings. ganttza's config.toml has no notion of\n\
          # this — it falls back to a deterministic per-index color when none is set.\n\n\
          # Color palette (hex) for multi-series energy lines. Cycles if more series than entries.\n\
          energy_series_colors = [\n{}]\n",

@@ -21,7 +21,8 @@ oar/
     ├── energy_estimate.rs  — estimate_from_jobs (same logic as evalys)
     ├── mocker.rs           — fake data for testing without SSH
     ├── api_types.rs        — ApiSnapshot (jobs + resources + dead_intervals), used by server + WASM
-    └── server.rs           — axum HTTP server (native only)
+    ├── server.rs           — axum HTTP server (native only)
+    └── web_settings.rs     — WASM localStorage: load/save ApplicationOptions + GanttConfig
 ```
 
 ---
@@ -180,14 +181,59 @@ Cluster filter presets:
 ]
 ```
 
-### `GOARD_SSH_HOST` environment variable
+### `ganttza/config.toml` (Gantt settings)
 
-SSH host for the OAR cluster. Set before running either mode:
+See `ganttza/DEV.md` — Configuration section. All Gantt display settings live there. Pass `--config <path>` to load an alternative file.
+
+### `oar/live_config.toml` (local SSH default)
+
+Convenience file read by the app on startup if no `--config` is passed and no `GOARD_SSH_HOST` env var is set. Not a unified config — only used as a local default.
+
+```toml
+# SSH host used to fetch live OAR data
+ssh_host = "grenoble.g5k"
+```
+
+### `--config` CLI flag
 
 ```bash
-GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release
-GOARD_SSH_HOST=grenoble.g5k cargo run -p oar --release -- --serve
+cargo run -p oar -- --config /path/to/config.toml
+cargo run -p oar -- --config /path/to/config.toml --serve
 ```
+
+Loads ganttza settings from the top-level keys and reads the `[oar]` section for oar-specific settings:
+
+```toml
+# top-level keys → GanttConfig (see ganttza/DEV.md for full reference)
+default_timespan = 21600
+
+[oar]
+# Fallbacks — env vars take priority if already set
+ssh_host    = "grenoble.g5k"
+oar_version = "2"            # "2" or "3"
+```
+
+`GanttConfig::from_toml_str` silently ignores `[oar]` and other unknown sections.
+
+### Environment variables
+
+| Variable | Default | Effect |
+|----------|---------|--------|
+| `GOARD_SSH_HOST` | `grenoble.g5k` | SSH host for `oarstat` commands |
+| `GOARD_OAR_VERSION` | `2` | OAR API version; `2` or `3` |
+
+`--config [oar].ssh_host` and `[oar].oar_version` act as fallbacks — env vars take priority if already set.
+
+### Options persistence
+
+| Build | Storage | Key(s) |
+|-------|---------|--------|
+| Native | `eframe::Storage` (`~/.local/share/oar/`) | `oar_options` (JSON) |
+| WASM | `localStorage` | `goard_options` (JSON), `goard_gantt_config` (JSON) |
+
+Native: `App::save()` writes `ApplicationOptions` to `eframe::Storage` keyed `oar_options`. Loaded from `cc.storage` in `main.rs` before `App::new()`.
+
+WASM: `web_settings.rs` wraps `localStorage` reads/writes. Keys are `goard_options` (`ApplicationOptions`) and `goard_gantt_config` (`GanttConfig`). These keys are stable — do not rename without clearing browser storage.
 
 ---
 
