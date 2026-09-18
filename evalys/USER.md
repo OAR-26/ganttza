@@ -6,7 +6,15 @@ Static file viewer for OAR simulation, energy series, and event JSON files.
 
 ## Startup
 
-The app opens directly on the **Gantt** view (empty until a file is imported).
+```
+evalys [--config <config.toml>] [file1.json] [file2.json+file3.json] ...
+```
+
+- `--config <path>` — load Gantt settings + evalys settings from a custom TOML file instead of the defaults (`ganttza/config.toml` and `evalys/sim_config.toml`)
+- File arguments are imported immediately on launch (no dialog needed)
+- `file1+file2` syntax groups two files into one tab (e.g. OAR + energy series overlay)
+
+The app opens on the **Gantt** view (empty until a file is imported).
 
 Authentication is not required to view data. Only admin operations need it:
 - Create / edit / delete Gantt views
@@ -76,10 +84,34 @@ One tab per imported file or group.
 
 ### Gantt toolbar
 - **View** — aggregation view selector
-- **🔧 Settings** — job color mode (random / by state)
+- **⚙ Settings** — Gantt display settings panel (see [Settings](#settings))
 - **Admin** — administration panel (requires auth)
-- **Nav** — `◀ 1w`, `◀ 1d`, `1d ▶`, `1w ▶`
+- **Nav** — navigation buttons (e.g. `◀ 1d`, `1w ▶`); steps configured in Settings
 - **⌚ Center on now**
+
+---
+
+## Settings
+
+**⚙ Settings** opens a panel with all Gantt display options:
+
+| Section | Controls |
+|---------|----------|
+| General | Truncate Absent/besteffort, min state duration, default timespan |
+| Job Colors | Random / By field mode, field name, field value→color map, border |
+| Gantt Rows | Default, min, max row height |
+| XY Panel | Panel height, watts per resource, now-line color |
+| Zoom | Max/min seconds, scroll/drag sensitivity, animation duration |
+| Timeline | Show/hide year/month/day/hour/minute/second, grid auto/manual |
+| Navigation | Add, remove, reorder nav step buttons |
+| Layout | Gutter max width, job label field and min width, hatch spacing |
+| State colors | Absent/Suspected/Dead/Standby colors (dark and light mode) |
+
+Buttons at the bottom:
+- **✔ Apply** — save and apply (writes to active config file)
+- **Cancel** — discard changes
+- **Import** — load settings from a `.toml` file into the draft (does not apply until you click Apply)
+- **Export** — save the current draft to a `.toml` file (useful to share or back up a config)
 
 ### Summary row
 Shows: active view name, filtered job count, summary fields, data state.

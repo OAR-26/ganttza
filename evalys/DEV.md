@@ -186,9 +186,50 @@ Max 200 entries (FIFO). Dedup key is the hash: if a file is moved, the stored pa
 
 ## Configuration
 
-### `evalys/sim_config.toml`
+### `ganttza/config.toml` (Gantt settings)
 
-SSH connection and display preferences. Written by the Settings panel.
+See `ganttza/DEV.md` — Configuration section. All Gantt display settings (colors, zoom, row height, nav steps, etc.) live there. Pass `--config <path>` to load an alternative file at startup.
+
+### `evalys/sim_config.toml` (evalys-specific settings)
+
+Stores evalys-only settings that `ganttza` has no concept of. Written automatically when the user changes them in the Settings panel.
+
+**Single key currently:**
+
+```toml
+# Color palette (hex) for multi-series energy lines.
+# Cycles if more series than entries. Default: matplotlib tab10 palette.
+energy_series_colors = [
+    "#1f77b4",
+    "#ff7f0e",
+    "#2ca02c",
+    "#d62728",
+    "#9467bd",
+    "#8c564b",
+    "#e377c2",
+    "#bcbd22",
+]
+```
+
+**API in `src/sim_config.rs`:**
+
+| Function | Description |
+|----------|-------------|
+| `set_config_path(path)` | Override path via `OnceLock`; call once at startup before `App::new()` |
+| `load_energy_series_colors()` | Read `energy_series_colors` from active config; returns defaults if file missing |
+| `save_energy_series_colors(colors)` | Write palette to active config path |
+
+Default path: `evalys/sim_config.toml` (relative to CWD). Override with `--config`.
+
+### `--config` CLI flag
+
+```
+cargo run -p evalys -- --config /path/to/config.toml [files...]
+```
+
+Sets both `ganttza::set_config_path` and `sim_config::set_config_path` to the same file. The file can contain top-level ganttza keys **and** an `[evalys]` section (currently unused) and a `[oar]` section (ignored). `GanttConfig::from_toml_str` silently skips unknown sections.
+
+The `--config` value is excluded from the file import argument list — pass it before or after file paths, it won't be treated as an import target.
 
 ---
 

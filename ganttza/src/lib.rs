@@ -5,6 +5,8 @@ i18n!("src/i18n");
 pub mod models;
 pub mod views;
 
+pub use models::data_structure::gantt_config::set_config_path;
+
 /// Localised window title for binary crates that launch the app.
 pub fn window_title() -> String {
     t!("app.title").to_string()

@@ -9,13 +9,26 @@ mod tab_state_cache;
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<(), eframe::Error> {
     let args: Vec<String> = std::env::args().skip(1).collect();
-    let import_entries: Vec<Vec<String>> = args.into_iter()
-        .filter(|a| !a.starts_with("--"))
-        .map(|a| {
+
+    // --config <path>: unified config file (ganttza + [evalys] section)
+    let config_idx = args.iter().position(|a| a == "--config");
+    if let Some(config_path) = config_idx.and_then(|i| args.get(i + 1)) {
+        ganttza::set_config_path(config_path.clone());
+        crate::sim_config::set_config_path(config_path.clone());
+    }
+
+    let import_entries: Vec<Vec<String>> = args.iter().enumerate()
+        .filter(|(i, a)| {
+            if a.starts_with("--") { return false; }
+            // skip the value that follows --config
+            if config_idx.map_or(false, |ci| *i == ci + 1) { return false; }
+            true
+        })
+        .map(|(_, a)| {
             if a.contains('+') {
                 a.split('+').map(|s| s.to_string()).filter(|s| !s.is_empty()).collect()
             } else {
-                vec![a]
+                vec![a.clone()]
             }
         })
         .collect();

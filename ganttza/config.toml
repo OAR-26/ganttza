@@ -92,7 +92,7 @@ show_month  = true
 show_day    = true
 show_hour   = true
 show_minute = true
-show_second = true
+show_second = false
 
 # Grid line spacing: true = automatic (picks spacing from zoom level).
 # false = fixed spacing set by timeline_grid_manual_period_s below.
@@ -107,11 +107,11 @@ timeline_grid_manual_period_s = 3600
 # unit: minute | hour | day | week
 
 [[nav_steps]]
-n    = 1
+n    = 5
 unit = "day"
 
 [[nav_steps]]
-n    = 1
+n    = 5
 unit = "week"
 
 
